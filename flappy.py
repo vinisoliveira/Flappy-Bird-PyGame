@@ -9,9 +9,11 @@ class Bird(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.images = [
-            pygame.iamge.load('assets/bluebird-ipflap.png').convert_alpha(),
-            pygame.iamge.load('assets/bluebird-midflap.png').convert_alpha(),
-            pygame.iamge.load('assets/bluebird-downflap.png').convert_alpha()]
+            pygame.image.load('assets/bluebird-upflap.png').convert_alpha(),
+            pygame.image.load('assets/bluebird-midflap.png').convert_alpha(),
+            pygame.image.load('assets/bluebird-downflap.png').convert_alpha()]
+
+        self.current_image = 0
 
         self.image = pygame.image.load('assets/bluebird-midflap.png').convert_alpha()
         self.rect = self.image.get_rect()
@@ -19,7 +21,8 @@ class Bird(pygame.sprite.Sprite):
         self.rect[1] = SCREEN_H / 2
 
     def update(self):
-        pass
+        self.current_image = (self.current_image + 1) % 3
+        self.image = self.images[self.current_image]
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
