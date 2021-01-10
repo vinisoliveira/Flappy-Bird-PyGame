@@ -23,6 +23,7 @@ class Bird(pygame.sprite.Sprite):
         self.current_image = 0
 
         self.image = pygame.image.load('assets/bluebird-midflap.png').convert_alpha()
+        self_mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect[0] = SCREEN_W / 2
         self.rect[1] = SCREEN_H / 2
@@ -41,8 +42,9 @@ class Bird(pygame.sprite.Sprite):
 class Ground(pygame.sprite.Sprite):
     def __init__(self, xpos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('assets/base.png')
+        self.image = pygame.image.load('assets/base.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (GROUND_WIDTH, GROUND_HEIGHT))
+        self_mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect[0] = xpos
         self.rect[1] = SCREEN_H - GROUND_HEIGHT
@@ -92,5 +94,10 @@ while True:
 
     bird_group.draw(screen)
     ground_group.draw(screen)
-    
+
     pygame.display.update()
+
+    if pygame.sprite.groupcollide(bird_group, ground_group, False, False, pygame.sprite.collide_mask):
+        #GAME OVER
+        input()
+        break
