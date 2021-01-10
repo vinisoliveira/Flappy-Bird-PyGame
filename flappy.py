@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from pygame.locals import *
 
 SCREEN_W = 400
@@ -9,6 +9,10 @@ GAME_SPEED = 10
 
 GROUND_WIDTH = 2 * SCREEN_W
 GROUND_HEIGHT = 100
+
+PIPE_W = 90
+PIPE_H = 290
+PIPE_GAP = 100  
 
 class Bird(pygame.sprite.Sprite):
     def __init__(self):
@@ -39,6 +43,27 @@ class Bird(pygame.sprite.Sprite):
     def bump(self):
         self.speed = -SPEED
 
+class Pipe(pygame.sprite.Sprite):
+    def __init__(self, inverted, xpos, ysize):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('assets/pipe-green.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (PIPE_W, PIPE_H))
+
+        self.rect = self.image.get_rect()
+        self.rect[0] = xpos
+
+        
+        if inverted:
+            self.image = pygame.transform.flip(self.image, False, True)
+            self.rect[1] - (self.rect[3] - ysize)
+        else:
+            self.rect[1] = SCREEN_H - ysize
+
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self):
+        self.rect[0] -= GAME_SPEED
+
 class Ground(pygame.sprite.Sprite):
     def __init__(self, xpos):
         pygame.sprite.Sprite.__init__(self)
@@ -55,6 +80,11 @@ class Ground(pygame.sprite.Sprite):
 def is_off_screen(sprite):
     return sprite.rect[0] < -(sprite.rect[2])
 
+def get_random_pipes(xpos):
+    size = random.randint(100, 300)
+    pipe= Pipe(False, xpos, size)
+    pipe_inverted = Pipe(True, xpos, SCREEN_H - size - PIPE_GAP)
+    return(pipe, pipe_inverted)
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
@@ -70,6 +100,12 @@ ground_group = pygame.sprite.Group()
 for i in range(2):
     ground = Ground(GROUND_WIDTH * i)
     ground_group.add(ground)
+
+pipe_group = pygame.sprite.Group()
+for i in range(2):
+    pipes = get_random_pipes(SCREEN_W * i + 600)
+    pipe_group.add(pipes[0])
+    pipe_group.add(pipes[1])
 
 clock = pygame.time.Clock()
 
@@ -89,15 +125,27 @@ while True:
         new_ground = Ground(GROUND_WIDTH - 20)
         ground_group.add(new_ground )
 
+    if is_off_screen(pipe_group.sprites()[0]):
+        pipe_group.remove(pipe_group.sprites()[0])
+        pipe_group.remove(pipe_group.sprites()[0])
+
+        pipes = get_random_pipes(SCREEN_W * 2)
+
+        pipe_group.add(pipes[0])
+        pipe_group.add(pipes[1])
+
+
     bird_group.update()
     ground_group.update()
+    pipe_group.update()
 
     bird_group.draw(screen)
+    pipe_group.draw(screen)
     ground_group.draw(screen)
 
     pygame.display.update()
 
-    if pygame.sprite.groupcollide(bird_group, ground_group, False, False, pygame.sprite.collide_mask):
+    if (pygame.sprite.groupcollide(bird_group, ground_group, False, False, pygame.sprite.collide_mask) or 
+      pygame.sprite.groupcollide(bird_group, pipe_group, False, False, pygame.sprite.collide_mask)):
         #GAME OVER
-        input()
         break
