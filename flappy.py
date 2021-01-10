@@ -103,7 +103,7 @@ for i in range(2):
 
 pipe_group = pygame.sprite.Group()
 for i in range(2):
-    pipes = get_random_pipes(SCREEN_W * i + 600)
+    pipes = get_random_pipes(SCREEN_W * i + 800)
     pipe_group.add(pipes[0])
     pipe_group.add(pipes[1])
 
