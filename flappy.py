@@ -108,7 +108,7 @@ for i in range(2):
     pipe_group.add(pipes[1])
 
 clock = pygame.time.Clock()
-
+ 
 while True:
     clock.tick(30)
     for event in pygame.event.get():
