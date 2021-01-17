@@ -27,7 +27,7 @@ class Bird(pygame.sprite.Sprite):
         self.current_image = 0
 
         self.image = pygame.image.load('assets/bluebird-midflap.png').convert_alpha()
-        self_mask = pygame.mask.from_surface(self.image)
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect[0] = SCREEN_W / 2
         self.rect[1] = SCREEN_H / 2
@@ -69,7 +69,7 @@ class Ground(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('assets/base.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (GROUND_WIDTH, GROUND_HEIGHT))
-        self_mask = pygame.mask.from_surface(self.image)
+        self. mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect[0] = xpos
         self.rect[1] = SCREEN_H - GROUND_HEIGHT
@@ -82,7 +82,7 @@ def is_off_screen(sprite):
 
 def get_random_pipes(xpos):
     size = random.randint(100, 300)
-    pipe= Pipe(False, xpos, size)
+    pipe = Pipe(False, xpos, size)
     pipe_inverted = Pipe(True, xpos, SCREEN_H - size - PIPE_GAP)
     return(pipe, pipe_inverted)
 
